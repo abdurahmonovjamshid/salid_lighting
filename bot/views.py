@@ -103,8 +103,7 @@ def start_handler(message):
     try:
         TgUser.objects.filter(telegram_id=message.from_user.id).update(
             step=USER_STEP['DEFAULT'])
-        response_message = f"Salom, {
-            message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
+        response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
 
         # Send the response message back to the user
         bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
@@ -334,8 +333,7 @@ def next_prev_calback(call):
 
         inline_kb = InlineKeyboardMarkup(row_width=5)
         buttons = []
-        text = f"<strong>{text}</strong> so'rovi bo'yicha natijalar:\n{
-            len(cars)} dan {page*10-9} - {page*10 if len(cars) >= page*10 else len(cars)}\n\n"
+        text = f"<strong>{text}</strong> so'rovi bo'yicha natijalar:\n{len(cars)} dan {page*10-9} - {page*10 if len(cars) >= page*10 else len(cars)}\n\n"
         text += "<pre>"
         text += "{:<2} {:<11} {:<6} {:<9}\n\n".format(
             "No", "Nomi", "Yili", "Viloyat")
