@@ -265,8 +265,7 @@ def cm_start(message):
                     text += f"👁: {car.seen.count()}, "
                     text += f"👍: {car.likes.count()}, "
                     text += f"👎: {car.dislikes.count()}\n\n"
-                    text += f"📤 Joylandi: {
-                        car.created_at.strftime('%Y-%m-%d | %H:%M')}\n"
+                    text += f"📤 Joylandi: {car.created_at.strftime('%Y-%m-%d | %H:%M')}\n"
                     text += f"Holati: {'✅ Faol' if car.post else '❗️ Nofaol'}"
                     media_group = [telebot.types.InputMediaPhoto(
                         media=car.images.first().image_link, caption=text[:1024])]
