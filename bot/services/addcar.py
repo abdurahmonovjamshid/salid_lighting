@@ -303,8 +303,7 @@ def search_car(message, bot):
                          text='Natijalar', reply_markup=main_button)
         inline_kb = InlineKeyboardMarkup(row_width=5)
         buttons = []
-        text = f"<strong>{search_text}</strong> so'rovi bo'yicha natijalar:\n{
-            len(cars)} dan 1 - {10 if len(cars) >= 10 else len(cars)}\n\n"
+        text = f"<strong>{search_text}</strong> so'rovi bo'yicha natijalar:\n{len(cars)} dan 1 - {10 if len(cars) >= 10 else len(cars)}\n\n"
         text += "<pre>"
         text += "{:<2} {:<11} {:<6} {:<9}\n\n".format(
             "No", "Nomi", "Yili", "Viloyat")
