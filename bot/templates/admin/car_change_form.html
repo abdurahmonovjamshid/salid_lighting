@@ -1,0 +1,37 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-gap: 10px;
+            margin-top: 20px;
+        }
+        .image-grid img {
+            width: 100%;
+            height: auto;
+        }
+        .car-images-heading {
+            margin: 0;
+            padding: 8px;
+            font-weight: 400;
+            font-size: 0.8125rem;
+            text-align: left;
+            background: var(--primary);
+            color: var(--header-link-color);
+        }
+    </style>
+{% endblock %}
+
+{% block after_field_sets %}
+    {{ block.super }}
+    <h2 class="car-images-heading">Car Images</h2>
+    <div class="image-grid">
+        
+        {% for image in car.images.all %}
+            <img src="{{ image.telegraph }}" alt="Car Image">
+        {% endfor %}
+    </div>
+{% endblock %}
