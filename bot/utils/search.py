@@ -14,7 +14,8 @@ def search_cars(query):
     name_query = Q()
     model_query = Q()
     year_query = Q()
-    price_query = Q()
+    region_query = Q()
+    district_query = Q()
     description_query = Q()
 
     for term in search_terms:
@@ -23,11 +24,12 @@ def search_cars(query):
             name_query |= Q(name__icontains=term)
             model_query |= Q(model__icontains=term)
             year_query |= Q(year__icontains=term)
-            price_query |= Q(price__icontains=term)
+            region_query |= Q(region__name__icontains=term)
+            district_query |= Q(district__name__icontains=term)
             description_query |= Q(description__icontains=term)
 
     # Combine the queries for all fields
-    all_fields_query = name | name_query | model_query | year_query | price_query | description_query
+    all_fields_query = name | name_query | model_query | year_query | region_query | district_query | description_query
 
     # Perform the search query
     results = Car.objects.filter(all_fields_query, post=True).annotate(
