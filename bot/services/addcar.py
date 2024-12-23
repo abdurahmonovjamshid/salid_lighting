@@ -92,9 +92,7 @@ def add_model(message, bot):
 
 def add_year(message, bot):
     try:
-        current_year = timezone.now().year
-
-        if current_year >= int(message.text) >= 1999:
+        if len(message.text) >= 2:
             year = message.text
             user = TgUser.objects.get(telegram_id=message.from_user.id)
             car = Car.objects.get(owner=user, complate=False)
