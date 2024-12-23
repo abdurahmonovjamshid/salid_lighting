@@ -1,10 +1,16 @@
 from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 
+
 main_button = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
 main_button.add('🔍 Qidirish', "📝 Ariza qoldirish")
 main_button.add('📑 Mening arizalarim',)
 main_button.add('📊 Statistika', '👨‍💻 Admin')
+
+main_button2 = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+
+main_button2.add('📑 Mening arizalarim', "📝 Ariza qoldirish")
+main_button2.add('👨‍💻 Admin',)
 
 
 cencel = ReplyKeyboardMarkup(resize_keyboard=True).add(

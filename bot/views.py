@@ -13,7 +13,7 @@ from datetime import timedelta
 from django.utils import timezone
 from conf.settings import ADMINS, CHANNEL_ID, HOST, TELEGRAM_BOT_TOKEN
 
-from .buttons.default import cencel, main_button, main_menu
+from .buttons.default import cencel, main_button, main_menu, main_button2
 from .buttons.inline import create_social_btn, urlkb
 from .models import Car, Search, TgUser, Region, District
 from .services.addcar import (add_car, add_description, add_model, add_number,
@@ -101,13 +101,23 @@ def delete_car(call):
 @bot.message_handler(commands=['start'])
 def start_handler(message):
     try:
-        TgUser.objects.filter(telegram_id=message.from_user.id).update(
-            step=USER_STEP['DEFAULT'])
-        response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
+        if str(message.from_user.id) in ADMINS:
+            TgUser.objects.filter(telegram_id=message.from_user.id).update(
+                step=USER_STEP['DEFAULT'])
+            response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
 
-        # Send the response message back to the user
-        bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
-                       caption=response_message, reply_markup=main_button)
+            # Send the response message back to the user
+            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
+                        caption=response_message, reply_markup=main_button)
+        else:
+            
+            TgUser.objects.filter(telegram_id=message.from_user.id).update(
+                step=USER_STEP['DEFAULT'])
+            response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
+
+            # Send the response message back to the user
+            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
+                        caption=response_message, reply_markup=main_button2)
     except Exception as e:
         print(e)
 
@@ -180,7 +190,7 @@ def cm_start(message):
             TgUser.objects.filter(telegram_id=message.from_user.id).update(
                 step=USER_STEP['ADD_CAR'])
             bot.send_message(
-                message.from_user.id, text='📷 <b>2</b> tadan <b>6</b> tagacha Lyustrangiz rasmini joylang!', reply_markup=cencel, parse_mode='html')
+                message.from_user.id, text='📷 Lyustrangiz rasmini joylang!', reply_markup=cencel, parse_mode='html')
         else:
             bot.send_message(chat_id=message.from_user.id,
                              text="🚫 Sizda faol arizalar soni ko'p")
@@ -206,20 +216,8 @@ def statistics(message):
             all_cars = Car.objects.filter(post=True).count()
             bot.send_message(chat_id=message.from_user.id,
                              text=f"📊 Statistika ({today})\n\n<strong>👥 Bot foydalanuvchilari</strong>: <code>{all_users}</code>,\n       ------\n<strong>❌ O'chirilgan foydalanuvchilar</strong>: <code>{deleted_users}</code>,\n       ------\n<strong>🧾 Joylangan arizalar</strong>: <code>{all_cars}</code>.", parse_mode='html')
-            return
-        threshold_date = timezone.now() - timedelta(days=15)
-        # Query all cars that meet the conditions
-        filtered_cars = Car.objects.filter(
-            created_at__lte=threshold_date, post=True)
-        for car in filtered_cars:
-            car.post = False
-            car.save()
-
-        today = timezone.localdate()
-        all_users = TgUser.objects.all().count()
-        all_cars = Car.objects.filter(post=True).count()
-        bot.send_message(chat_id=message.from_user.id,
-                         text=f"📊 Statistika ({today})\n\n<strong>👥 Bot foydalanuvchilari</strong>: <code>{all_users}</code>,\n       ------\n<strong>🧾 Joylangan arizalar</strong>: <code>{all_cars}</code>.", parse_mode='html')
+        else:
+            start_handler(message)
     except Exception as e:
         print(e)
 
@@ -227,19 +225,13 @@ def statistics(message):
 @bot.message_handler(regexp="🔍 Qidirish")
 def start_search_car(message):
     try:
-        TgUser.objects.filter(telegram_id=message.from_user.id).update(
-            step=USER_STEP['SEARCH_CAR'])
-        bot.send_message(chat_id=message.from_user.id,
-                         text="Joylangan arizalarni qidirish uchun Lyustra malumotlarini kiriting", reply_markup=main_menu)
-
-        threshold_date = timezone.now() - timedelta(days=15)
-        # Query all cars that meet the conditions
-        filtered_cars = Car.objects.filter(
-            created_at__lte=threshold_date, post=True)
-        for car in filtered_cars:
-            car.post = False
-            car.save()
-
+        if str(message.from_user.id) in ADMINS:
+            TgUser.objects.filter(telegram_id=message.from_user.id).update(
+                step=USER_STEP['SEARCH_CAR'])
+            bot.send_message(chat_id=message.from_user.id,
+                            text="Joylangan arizalarni qidirish uchun Lyustra malumotlarini kiriting", reply_markup=main_menu)
+        else:
+            start_handler(message)
     except Exception as e:
         print(e)
 
