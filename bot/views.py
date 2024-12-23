@@ -206,13 +206,6 @@ def cm_start(message):
 def statistics(message):
     try:
         if str(message.from_user.id) in ADMINS:
-            threshold_date = timezone.now() - timedelta(days=15)
-            # Query all cars that meet the conditions
-            filtered_cars = Car.objects.filter(
-                created_at__lte=threshold_date, post=True)
-            for car in filtered_cars:
-                car.post = False
-                car.save()
 
             today = timezone.localdate()
             all_users = TgUser.objects.all().count()
@@ -244,14 +237,6 @@ def start_search_car(message):
 def cm_start(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
-
-        threshold_date = timezone.now() - timedelta(days=15)
-        # Query all cars that meet the conditions
-        filtered_cars = Car.objects.filter(
-            created_at__lte=threshold_date, post=True)
-        for car in filtered_cars:
-            car.post = False
-            car.save()
 
         if user.car_set.exists():
             cars = user.car_set.filter(complate=True)
