@@ -190,7 +190,7 @@ def cencel_car(message):
 def cm_start(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
-        if user.car_set.all().count() < 3 or str(user.telegram_id) in ADMINS:
+        if user.car_set.all().count() < 10 or str(user.telegram_id) in ADMINS:
             TgUser.objects.filter(telegram_id=message.from_user.id).update(
                 step=USER_STEP['ADD_CAR'])
             bot.send_message(
