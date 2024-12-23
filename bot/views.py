@@ -583,7 +583,7 @@ def retrieve_region(call):
         user.step = USER_STEP['ADD_DESCRIPTION']
         user.save()
         bot.edit_message_text(chat_id=call.from_user.id, message_id=call.message.message_id, reply_markup=None,
-                              text='📝Lyustra haqida to\'liq ma\'lumot kiriting\n<i>(kamida 100ta ko\'pi bilan 800ta belgi)</i>\nM\'lumot kiritishda Lyustrangiz haraktikasi, rangi, yurgan masofasi va barcha kerakli ma\'lumotlarni kiritishni unutmang!', parse_mode='html')
+                              text='📝Arizangiz haqida batafsil ma\'lumot kiriting\n<i>(kamida 10ta ko\'pi bilan 800ta belgi)</i>\nMa\'lumot kiritishda Lyustrani harid qilgan do\'kon va boshqa kerakli ma\'lumotlarni kiritishni unutmang!', parse_mode='html')
 
     except Exception as e:
         bot.answer_callback_query(

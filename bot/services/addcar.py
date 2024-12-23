@@ -144,7 +144,7 @@ def add_price(message, bot):
 def add_description(message, bot):
     try:
         description = message.text
-        if 100 < len(description) < 800:
+        if 10 < len(description) < 800:
             user = TgUser.objects.get(telegram_id=message.from_user.id)
             car = Car.objects.get(owner=user, complate=False)
             car.description = description
