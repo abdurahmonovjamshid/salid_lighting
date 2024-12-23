@@ -50,7 +50,7 @@ def add_car(message, bot):
                     chat_id=message.from_user.id, message_id=car.delete)
 
             msg = bot.send_message(
-                message.from_user.id, text='🚘 Lyustra nomini(modelini) kiriting\n(<i>Kamida 5 ta belgi</i>)', parse_mode='html')
+                message.from_user.id, text='🚘 Lyustra modelini kiriting\n(<i>Karobkada yozilgan, Kamida 5 ta belgi</i>)\nMisol: "NC62/2W/2 CH"', parse_mode='html')
 
             car.delete = msg.id
             car.save()
