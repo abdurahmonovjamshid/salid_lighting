@@ -308,7 +308,7 @@ def search_car(message, bot):
         text += "{:<2} {:<11} {:<6} {:<9}\n\n".format(
             "No", "Nomi", "Yili", "Viloyat")
         for count, car in enumerate(cars[:10]):
-            text += "{:<2} {:<11} {:<6} {:<9}$\n".format(
+            text += "{:<2} {:<11} {:<6} {:<9}\n".format(
                 str(count+1)+".", car.name[:8]+'...' if len(car.name) > 11 else car.name, car.year, car.region.name)
             button = InlineKeyboardButton(
                 text=str(count+1), callback_data=f"retrieve_{car.id}")
