@@ -154,11 +154,15 @@ def cencel_car(message):
             user.step = USER_STEP['DEFAULT']
             user.save()
         else:
+            if str(message.from_user.id) in ADMINS:
+                btn = main_button
+            else:
+                btn = main_button2
             user.car_set.filter(complate=False).delete()
             user.step = USER_STEP['DEFAULT']
             user.save()
             bot.send_message(chat_id=message.from_user.id, text="E\'lon joylash bekor qilindi",
-                             reply_markup=main_button, parse_mode='html')
+                             reply_markup=btn, parse_mode='html')
     except Exception as e:
         print(e)
 
