@@ -3,7 +3,7 @@ from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 main_button = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
 main_button.add('🔍 Qidirish', "📝 Ariza qoldirish")
-main_button.add('📑 Mening e\'lonlarim',)
+main_button.add('📑 Mening arizalarim',)
 main_button.add('📊 Statistika', '👨‍💻 Admin')
 
 

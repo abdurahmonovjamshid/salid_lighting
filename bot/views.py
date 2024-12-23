@@ -244,7 +244,7 @@ def start_search_car(message):
         print(e)
 
 
-@bot.message_handler(regexp="📑 Mening e\'lonlarim")
+@bot.message_handler(regexp="📑 Mening arizalarim")
 def cm_start(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
