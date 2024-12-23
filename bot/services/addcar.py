@@ -60,7 +60,7 @@ def add_car(message, bot):
                 car.name = message.text.capitalize()
                 car.save()
                 bot.send_message(
-                    message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni kiriting.\n(<i>shisha, qosh Va.h.k...</i>)', parse_mode='html')
+                    message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni va sonini kiriting.\n(<i>shisha, qosh Va.h.k...</i>)', parse_mode='html')
                 user.step = USER_STEP['ADD_MODEL']
                 user.save()
             else:
