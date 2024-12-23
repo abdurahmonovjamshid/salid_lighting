@@ -60,7 +60,7 @@ def add_car(message, bot):
                 car.name = message.text.capitalize()
                 car.save()
                 bot.send_message(
-                    message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni va sonini kiriting.\n(<i>shisha, qosh Va.h.k...</i>)', parse_mode='html')
+                    message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni va sonini kiriting.\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')
                 user.step = USER_STEP['ADD_MODEL']
                 user.save()
             else:
@@ -84,7 +84,7 @@ def add_model(message, bot):
         user.step = USER_STEP['ADD_YEAR']
         user.save()
         bot.send_message(message.from_user.id,
-                         text=f'📅 Lyustrani xarid qilgan yilingizni kiriting.\n<i>(1999-{timezone.now().year})</i>', parse_mode='html')
+                         text=f'📅 Lyustrani xarid qilgan sanangizni kiritin kiriting.\n<i>(25.01.2025)</i>', parse_mode='html')
     else:
         bot.send_message(message.from_user.id,
                          text='🚫 Lyustra markasi qabul qilinmadi.\nQayta kiriting!\n(<i>chevrolet, daewoo, ravon...</i>)', parse_mode='html')

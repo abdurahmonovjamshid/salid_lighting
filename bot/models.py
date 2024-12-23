@@ -27,7 +27,7 @@ class Car(models.Model):
     owner = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
     model = models.CharField(max_length=100, null=True, blank=True)
-    year = models.PositiveIntegerField(null=True, blank=True)
+    year = models.CharField(max_length=50, null=True, blank=True)
     price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True)
     region = models.ForeignKey(
