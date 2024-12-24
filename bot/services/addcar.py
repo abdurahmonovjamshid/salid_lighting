@@ -2,10 +2,12 @@ import re
 import threading
 
 import telebot
+import openpyxl
 from telebot import types
 from django.db.models import Q
 from django.utils import timezone
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from openpyxl.utils import get_column_letter
 
 from conf.settings import ADMINS, CHANNEL_ID
 
@@ -354,3 +356,44 @@ def search_car(message, bot):
     else:
         bot.send_message(message.from_user.id, text="So'rov bo'yicha xechqanday Ariza topilmadi",
                          parse_mode='html', reply_markup=main_menu)
+
+
+def create_excel_report(reports, file_path):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Reports"
+
+    # Define the header
+    headers = ['ID', 'Lyustra Nomi', 'Yetishmayotgan extiyot qisim', 'Viloyat', 'Tuman', 'Telefon raqami', 'Holati', 'Joylangan sana']
+    ws.append(headers)
+
+    # Populate the sheet with data from the reports
+    for report in reports:
+        row = [
+            report.id,
+            report.name,
+            report.model, 
+            report.region.name,
+            report.district.name,
+            report.contact_number,
+            report.post,
+            report.created_at.strftime('%d.%m.%Y')
+        ]
+        ws.append(row)
+        
+        # Auto-size columns based on the length of the data in each column
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column  # Get the column number
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2)  # Add a little extra space
+        ws.column_dimensions[get_column_letter(column)].width = adjusted_width
+
+    # Save the workbook to the specified file path
+    wb.save(file_path)
+    wb.close()

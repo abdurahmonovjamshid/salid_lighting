@@ -17,7 +17,7 @@ from .buttons.default import cencel, main_button, main_menu, main_button2
 from .buttons.inline import create_social_btn, urlkb
 from .models import Car, Search, TgUser, Region, District
 from .services.addcar import (add_car, add_description, add_model, add_number,
-                              add_price, add_year, paginated, search_car)
+                              add_price, add_year, paginated, search_car, create_excel_report)
 from .services.steps import USER_STEP
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN, threaded=False)
@@ -130,6 +130,39 @@ def all_cars(message):
             search_car(message=message, bot=bot)
         else:
             start_handler(message)
+    except Exception as e:
+        print(e)
+
+
+import os
+
+TEMP_DIR = os.path.join(os.getcwd(), 'temp_files')
+if not os.path.exists(TEMP_DIR):
+    os.makedirs(TEMP_DIR)
+
+@bot.message_handler(commands=['report'])
+def all_cars(message):
+    try:
+        reports = Car.objects.filter(complate=True).order_by('created_at')
+
+        if reports.exists():
+            # Generate Excel file and save it to a temporary location
+            file_name = f"report.xlsx"
+            file_path = os.path.join(TEMP_DIR, file_name)
+            create_excel_report(reports, file_path)
+
+            # Send the file using its path
+            with open(file_path, 'rb') as file:
+                bot.send_document(
+                    chat_id=message.chat.id, 
+                    document=file, 
+                    caption=f"#Report"
+                )
+
+            # Delete the file after sending
+            os.remove(file_path)
+        else:
+            bot.send_message(message.chat.id, f"No reports found yet")
     except Exception as e:
         print(e)
 
