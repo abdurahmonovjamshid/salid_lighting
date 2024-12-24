@@ -280,7 +280,7 @@ def cm_start(message):
                     text += f"👁: {car.seen.count()}, "
                     text += f"👍: {car.likes.count()}, "
                     text += f"👎: {car.dislikes.count()}\n\n"
-                    text += f"📤 Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}\n"
+                    text += f"📤 Joylandi: {car.created_at.strftime('%Y-%m-%d')}\n"
                     text += f"Holati: {'✅ Faol' if car.post else '❗️ Nofaol'}"
                     media_group = [telebot.types.InputMediaPhoto(
                         media=car.images.first().image_link, caption=text[:1024])]
@@ -407,7 +407,7 @@ def remove_message(call):
                                  text=f"<b>{car}</b> arizangiz faollashtirildi!", parse_mode='html')
 
                 text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}\n\n"
-                text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+                text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
                 media_group = [telebot.types.InputMediaPhoto(
                     media=car.images.first().image_link, caption=text)]
                 for photo in car.images.all()[1:]:
@@ -441,7 +441,7 @@ def retrieve_car(call):
         text += f"👁: {car.seen.count()}, "
         text += f"👍: {car.likes.count()}, "
         text += f"👎: {car.dislikes.count()}\n\n"
-        text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+        text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
 
         if str(call.from_user.id) in ADMINS:
             text += f"\nHolati: {'✅ Faol' if car.post else '❗️ Nofaol'}"
@@ -481,7 +481,7 @@ def retrieve_car(call):
         text += f"👁: {car.seen.count()}, "
         text += f"👍: {car.likes.count()}, "
         text += f"👎: {car.dislikes.count()}\n\n"
-        text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+        text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
         bot.edit_message_caption(
             chat_id=call.from_user.id, message_id=reply_to_message.id, caption=text)
         bot.answer_callback_query(callback_query_id=call.id)
@@ -511,7 +511,7 @@ def retrieve_car(call):
         text += f"👁: {car.seen.count()}, "
         text += f"👍: {car.likes.count()}, "
         text += f"👎: {car.dislikes.count()}\n\n"
-        text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+        text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
         bot.edit_message_caption(
             chat_id=call.from_user.id, message_id=reply_to_message.id, caption=text)
         bot.answer_callback_query(callback_query_id=call.id)

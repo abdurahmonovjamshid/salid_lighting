@@ -221,7 +221,7 @@ def add_number(message, bot):
         if car:
             # send new car to admins and channel
             text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}\n\n"
-            text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+            text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
             media_group = [telebot.types.InputMediaPhoto(
                 media=car.images.first().image_link, caption=text)]
             for photo in car.images.all()[1:]:
@@ -314,7 +314,7 @@ def search_car(message, bot):
             text += f"👁: {car.seen.count()}, "
             text += f"👍: {car.likes.count()}, "
             text += f"👎: {car.dislikes.count()}\n\n"
-            text += f"Joylandi: {car.created_at.astimezone(timezone.pytz.timezone('Asia/Tashkent')).strftime('%Y-%m-%d | %H:%M')}"
+            text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d')}"
             media_group = [telebot.types.InputMediaPhoto(
                 media=car.images.first().image_link, caption=text)]
             for photo in car.images.all()[1:]:
