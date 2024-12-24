@@ -9,7 +9,7 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from conf.settings import ADMINS, CHANNEL_ID
 
-from ..buttons.default import ask_phone, main_button, main_menu
+from ..buttons.default import ask_phone, main_button, main_menu, main_button2
 from ..buttons.inline import create_social_btn, urlkb
 from ..models import Car, CarImage, Search, TgUser, Region, District
 from ..services.steps import USER_STEP
@@ -33,6 +33,7 @@ def add_car(message, bot):
 
             car, created = Car.objects.get_or_create(
                 owner=user, complate=False)
+            
 
             if car.images.count() < 6:
                 photo_info = bot.get_file(message.photo[-1].file_id)
@@ -48,26 +49,46 @@ def add_car(message, bot):
             if car.delete or not created:
                 bot.delete_message(
                     chat_id=message.from_user.id, message_id=car.delete)
-
-            msg = bot.send_message(
-                message.from_user.id, text='🚘 Lyustra modelini kiriting\n(<i>Karobkada yozilgan, Kamida 5 ta belgi</i>)\nMisol: "NC62/2W/2 CH"', parse_mode='html')
-
+            
+            if not car.name:
+                msg = bot.send_message(
+                    message.from_user.id, text='🚘 Lyustra modelini kiriting\n(<i>Karobkada yozilgan, Kamida 5 ta belgi</i>)\nMisol: "NC62/2W/2 CH"', parse_mode='html')
+            elif car.name and not car.model:
+                msg = bot.send_message(
+                        message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni va sonini kiriting.\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')
+                user.step = USER_STEP['ADD_MODEL']
+                user.save()
             car.delete = msg.id
             car.save()
         elif message.text and user.car_set.filter(complate=False).exists():
-            if 50 > len(message.text) >= 5:
-                car = user.car_set.get(complate=False)
+            car = user.car_set.get(complate=False)
+            if not car.name and 50 > len(message.text) >= 5:
                 car.name = message.text.capitalize()
                 car.save()
-                bot.send_message(
-                    message.from_user.id, text='❕Lyustra uchun kerak bo\'lgan extiyot qisimni va sonini kiriting.\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')
-                user.step = USER_STEP['ADD_MODEL']
-                user.save()
+                msg = bot.send_message(
+                    message.from_user.id, text='📷 Lyustrada yetshmayotgan extiyot qism rasmini joylang!', parse_mode='html')
+                car.delete = msg.id
+                car.save()
+            elif not car.name and len(message.text) < 5:
+                msg = bot.send_message(
+                    message.from_user.id, text='🚘 Lyustra modelini kiriting\n(<i>Karobkada yozilgan, Kamida 5 ta belgi</i>)\nMisol: "NC62/2W/2 CH"', parse_mode='html')
+                if car.delete:
+                    bot.delete_message(
+                        chat_id=message.from_user.id, message_id=car.delete)
+                car.delete = msg.id
+                car.save()
             else:
-                bot.send_message(
-                    message.from_user.id, text='🚫Lyustra nomi(modeli) qabul qilinmadi.\nQayta kiriting! \n<>(kamida 5ta ko\'pi bilan 50ta belgi)</i>', parse_mode='html')
+                bot.delete_message(
+                chat_id=message.from_user.id, message_id=message.id)
+                msg = bot.send_message(
+                    message.from_user.id, text='📷 Lyustrada yetshmayotgan extiyot qism rasmini joylang!', parse_mode='html')
+                if car.delete:
+                    bot.delete_message(
+                        chat_id=message.from_user.id, message_id=car.delete)
+                car.delete = msg.id
+                car.save()
         else:
-            bot.send_message(
+            msg = bot.send_message(
                 message.from_user.id, text='🚫 Iltimos! <b>2</b> tadan <b>6</b> tagacha Lyustrangiz rasmini joylang!', parse_mode='html')
     except Exception as e:
         print(e)
@@ -75,20 +96,23 @@ def add_car(message, bot):
 
 
 def add_model(message, bot):
-    model = message.text.capitalize()
-    if 50 > len(model) >= 5:
-        user = TgUser.objects.get(telegram_id=message.from_user.id)
-        car = Car.objects.get(owner=user, complate=False)
-        car.model = model
-        car.save()
-        user.step = USER_STEP['ADD_YEAR']
-        user.save()
-        bot.send_message(message.from_user.id,
-                         text=f'📅 Lyustrani xarid qilgan sanangizni kiritin kiriting.\n<i>(25.01.2025)</i>', parse_mode='html')
+    if message.text:
+        model = message.text.capitalize()
+        if 50 > len(model) >= 5:
+            user = TgUser.objects.get(telegram_id=message.from_user.id)
+            car = Car.objects.get(owner=user, complate=False)
+            car.model = model
+            car.save()
+            user.step = USER_STEP['ADD_YEAR']
+            user.save()
+            bot.send_message(message.from_user.id,
+                            text=f'📅 Lyustrani xarid qilgan sanangizni kiritin kiriting.\n<i>(25.01.2025)</i>', parse_mode='html')
+        else:
+            bot.send_message(message.from_user.id,
+                            text='🚫 Lyustra zapchasti xaqida batafsilroq ma\'lumot kiriting!\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')
     else:
         bot.send_message(message.from_user.id,
-                         text='🚫 Lyustra markasi qabul qilinmadi.\nQayta kiriting!\n(<i>chevrolet, daewoo, ravon...</i>)', parse_mode='html')
-
+                            text='🚫 Lyustra zapchasti xaqida batafsilroq ma\'lumot kiriting!\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')
 
 def add_year(message, bot):
     try:
@@ -173,8 +197,8 @@ def add_number(message, bot):
                 if user.phone == '-':
                     user.phone = contact_number
                 user.save()
-                bot.send_message(message.from_user.id, text='E\'lon muvofaqiyatli joylandi',
-                                 reply_markup=main_button, parse_mode='html')
+                bot.send_message(message.from_user.id, text='Ariza muvofaqiyatli joylandi',
+                                 reply_markup=main_button2, parse_mode='html')
 
             else:
                 bot.send_message(
@@ -189,23 +213,29 @@ def add_number(message, bot):
             user.step = USER_STEP['DEFAULT']
             user.phone = contact_number
             user.save()
+            bot.send_message(message.from_user.id, text='Ariza muvofaqiyatli joylandi',
+                                 reply_markup=main_button2, parse_mode='html')
 
         if car:
             # send new car to admins and channel
-            text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}"
+            text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}\n\n"
+            text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d | %H:%M')}"
             media_group = [telebot.types.InputMediaPhoto(
                 media=car.images.first().image_link, caption=text)]
             for photo in car.images.all()[1:]:
                 media_group.append(
                     telebot.types.InputMediaPhoto(media=photo.image_link))
             for admin in ADMINS:
-                msg = bot.send_media_group(
-                    chat_id=admin, media=media_group)
-                ids = ''
-                for a in msg:
-                    ids += ','+str(a.id)
-                bot.reply_to(message=msg[0], text="Ushbu e\'lonni o\'chirish", reply_markup=InlineKeyboardMarkup(row_width=1).add(
-                    InlineKeyboardButton(text='Faollashtirish', callback_data=f'post_{car.id}'+ids), InlineKeyboardButton(text=f'O\'chirish', callback_data=f'del_{car.id}'+ids)))
+                try:
+                    msg = bot.send_media_group(
+                        chat_id=admin, media=media_group)
+                    ids = ''
+                    for a in msg:
+                        ids += ','+str(a.id)
+                    bot.reply_to(message=msg[0], text="Ushbu arizani o\'chirish", reply_markup=InlineKeyboardMarkup(row_width=1).add(
+                        InlineKeyboardButton(text='Faollashtirish', callback_data=f'post_{car.id}'+ids),))
+                except:
+                    pass
 
             # send to channel
             # bot.send_media_group(
@@ -221,10 +251,10 @@ def add_number(message, bot):
                 for a in msg:
                     ids += ','+str(a.id)
 
-                bot.reply_to(message=msg[0], text="Ushbu e\'lonni o\'chirish", reply_markup=InlineKeyboardMarkup().add(
-                    InlineKeyboardButton(text=f'O\'chirish', callback_data=f'del_{car.id}'+ids)))
+                # bot.reply_to(message=msg[0], text="Ushbu arizani o\'chirish", reply_markup=InlineKeyboardMarkup().add(
+                #     InlineKeyboardButton(text=f'O\'chirish', callback_data=f'del_{car.id}'+ids)))
 
-                msg = bot.send_message(message.from_user.id, text='✅ E\'lon qabul qilindi!\nE\'loningiz tez orada ko\'rib chiqilib Adminlar tomonidan faollashtiriladi!',
+                msg = bot.send_message(message.from_user.id, text='✅ Ariza qabul qilindi!\nArizangiz tez orada ko\'rib chiqilib Adminlar tomonidan faollashtiriladi!',
                                        reply_markup=main_button, parse_mode='html')
 
                 bot.reply_to(message=msg, text="Murojat uchun👇",

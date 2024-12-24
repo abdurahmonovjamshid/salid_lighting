@@ -40,6 +40,7 @@ class Car(models.Model):
 
     complate = models.BooleanField(default=False)
     post = models.BooleanField(default=False)
+    archive = models.BooleanField(default=False)
 
     seen = models.ManyToManyField(TgUser, related_name='seen_cars')
     likes = models.ManyToManyField(TgUser, related_name='liked_cars')

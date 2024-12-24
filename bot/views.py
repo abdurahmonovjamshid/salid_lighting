@@ -22,7 +22,6 @@ from .services.steps import USER_STEP
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN, threaded=False)
 
-
 @csrf_exempt
 def telegram_webhook(request):
     try:
@@ -86,13 +85,15 @@ def delete_car(call):
         if callback_data.startswith('del_'):
             car_id = callback_data.replace('del_', '')
             if Car.objects.filter(id=car_id).exists():
-                Car.objects.filter(pk=car_id).delete()
+                car = Car.objects.get(pk=car_id)
+                car.archive =True
+                car.save()
                 bot.answer_callback_query(
-                    callback_query_id=call.id, text='E\'lon o\'chirildi', show_alert=True)
+                    callback_query_id=call.id, text='Ariza o\'chirildi', show_alert=True)
 
             else:
                 bot.answer_callback_query(
-                    callback_query_id=call.id, text='E\'lon avval o\'chirilgan', show_alert=True)
+                    callback_query_id=call.id, text='Ariza avval o\'chirilgan', show_alert=True)
 
     except Exception as e:
         print(e)
@@ -107,7 +108,7 @@ def start_handler(message):
             response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
 
             # Send the response message back to the user
-            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
+            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAMKZ2lOa2V10GSobQABvmSlGuhla1UJAAIk8TEbYw5JS-fpivwKsrZPAQADAgADeAADNgQ',
                         caption=response_message, reply_markup=main_button)
         else:
             
@@ -116,7 +117,7 @@ def start_handler(message):
             response_message = f"Salom, {message.from_user.full_name}! 😊 \nBu bot orqalis siz Salid Lighting brandi ostida ishlab chiqariluvchi lyustralar uchun extiyot qisimlarga buyurtma berishingiz mumkin"
 
             # Send the response message back to the user
-            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAIEDmdgExrZnYqny_1enuVkbuogdB_OAAIg6DEb5VsBS9hLkSe6CjJvAQADAgADeAADNgQ',
+            bot.send_photo(chat_id=message.chat.id, photo='AgACAgIAAxkBAAMKZ2lOa2V10GSobQABvmSlGuhla1UJAAIk8TEbYw5JS-fpivwKsrZPAQADAgADeAADNgQ',
                         caption=response_message, reply_markup=main_button2)
     except Exception as e:
         print(e)
@@ -149,7 +150,7 @@ def cencel_car(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
         if user.step == USER_STEP['SEARCH_CAR']:
-            bot.send_message(chat_id=message.from_user.id, text="E\'lon qidirish bekor qilindi",
+            bot.send_message(chat_id=message.from_user.id, text="Ariza qidirish bekor qilindi",
                              reply_markup=main_button, parse_mode='html')
             user.step = USER_STEP['DEFAULT']
             user.save()
@@ -161,7 +162,7 @@ def cencel_car(message):
             user.car_set.filter(complate=False).delete()
             user.step = USER_STEP['DEFAULT']
             user.save()
-            bot.send_message(chat_id=message.from_user.id, text="E\'lon joylash bekor qilindi",
+            bot.send_message(chat_id=message.from_user.id, text="Ariza joylash bekor qilindi",
                              reply_markup=btn, parse_mode='html')
     except Exception as e:
         print(e)
@@ -172,7 +173,7 @@ def cencel_car(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
         if user.step == USER_STEP['SEARCH_CAR']:
-            bot.send_message(chat_id=message.from_user.id, text="E\'lon qidirish bekor qilindi",
+            bot.send_message(chat_id=message.from_user.id, text="Ariza qidirish bekor qilindi",
                              reply_markup=main_button, parse_mode='html')
             user.step = USER_STEP['DEFAULT']
             user.save()
@@ -180,7 +181,7 @@ def cencel_car(message):
             user.car_set.filter(complate=False).delete()
             user.step = USER_STEP['DEFAULT']
             user.save()
-            bot.send_message(chat_id=message.from_user.id, text="E\'lon joylash bekor qilindi",
+            bot.send_message(chat_id=message.from_user.id, text="Ariza joylash bekor qilindi",
                              reply_markup=main_button, parse_mode='html')
     except Exception as e:
         print(e)
@@ -190,14 +191,14 @@ def cencel_car(message):
 def cm_start(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
-        if user.car_set.all().count() < 10 or str(user.telegram_id) in ADMINS:
+        if user.car_set.filter(archive=False).count() < 10 or str(user.telegram_id) in ADMINS:
             TgUser.objects.filter(telegram_id=message.from_user.id).update(
                 step=USER_STEP['ADD_CAR'])
             bot.send_message(
                 message.from_user.id, text='📷 Lyustrangiz rasmini joylang!', reply_markup=cencel, parse_mode='html')
         else:
             bot.send_message(chat_id=message.from_user.id,
-                             text="🚫 Sizda faol arizalar soni ko'p")
+                             text="🚫 Sizda faol arizalar soni 10 tadan ko'p")
     except Exception as e:
         print(e)
 
@@ -238,7 +239,7 @@ def cm_start(message):
     try:
         user = TgUser.objects.get(telegram_id=message.from_user.id)
 
-        if user.car_set.exists():
+        if user.car_set.filter(archive=False):
             cars = user.car_set.filter(complate=True)
             for car in cars:
                 try:
@@ -262,7 +263,7 @@ def cm_start(message):
                         ids = ''
                         for a in msg:
                             ids += ','+str(a.id)
-                        bot.reply_to(message=msg[0], text="Ushbu e\'lonni o\'chirish", reply_markup=InlineKeyboardMarkup().add(
+                        bot.reply_to(message=msg[0], text="Ushbu arizani o\'chirish", reply_markup=InlineKeyboardMarkup().add(
                             InlineKeyboardButton(text=f'O\'chirish', callback_data=f'del_{car.id}'+ids)))
                     except Exception as e:
                         print(e)
@@ -372,7 +373,8 @@ def remove_message(call):
                 bot.send_message(chat_id=car.owner.telegram_id,
                                  text=f"<b>{car}</b> arizangiz faollashtirildi!", parse_mode='html')
 
-                text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}"
+                text = f"Nomi: {car.name},\nExtiyot qisim: {car.model},\nIshlab chiqarilgan yil: {car.year},\nViloyat: {car.region.name},\nTuman: {car.district.name},\nQo'shimcha malumot: \n{car.description[:800]},\n\nBog'lanish: {car.contact_number}\n\n"
+                text += f"Joylandi: {car.created_at.strftime('%Y-%m-%d | %H:%M')}"
                 media_group = [telebot.types.InputMediaPhoto(
                     media=car.images.first().image_link, caption=text)]
                 for photo in car.images.all()[1:]:
