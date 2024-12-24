@@ -143,7 +143,7 @@ if not os.path.exists(TEMP_DIR):
 @bot.message_handler(commands=['report'])
 def all_cars(message):
     try:
-        reports = Car.objects.filter(complate=True).order_by('created_at')
+        reports = Car.objects.filter(complate=True).order_by('-created_at')
 
         if reports.exists():
             # Generate Excel file and save it to a temporary location
