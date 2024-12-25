@@ -121,12 +121,22 @@ def start_handler(message):
                         caption=response_message, reply_markup=main_button2)
     except Exception as e:
         print(e)
+        
 
 
-@bot.message_handler(content_types=['video'])
-def handle_video_message(message):
-    file_id = message.video.file_id
-    bot.send_message(message.chat.id, f"File ID of the video: {file_id}")
+@bot.message_handler(commands=['help'])
+def start_handler(message):
+    try:    
+        bot.send_video(message.chat.id, 'BAACAgIAAxkBAAIDoGdrgzNh2nXA_my4taDFz55Gk4HXAAI7YQACf69YSxcf2d8OufC2NgQ', caption='test')
+    except Exception as e:
+        print(e)
+
+
+
+# @bot.message_handler(content_types=['video'])
+# def handle_video_message(message):
+#     file_id = message.video.file_id
+#     bot.send_message(message.chat.id, f"File ID of the video: {file_id}")
 
 
 @bot.message_handler(commands=['all'])
