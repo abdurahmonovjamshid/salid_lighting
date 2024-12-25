@@ -108,7 +108,7 @@ def add_model(message, bot):
             user.step = USER_STEP['ADD_YEAR']
             user.save()
             bot.send_message(message.from_user.id,
-                            text=f'📅 Lyustrani xarid qilgan sanangizni kiritin kiriting.\n<i>(25.01.2025)</i>', parse_mode='html')
+                            text=f'📅 Lyustrani xarid qilgan sanangizni kiriting.\n<i>(25.01.2025)</i>', parse_mode='html')
         else:
             bot.send_message(message.from_user.id,
                             text='🚫 Lyustra zapchasti xaqida batafsilroq ma\'lumot kiriting!\n(<i>shisha, qosh Va.h.k... 2ta</i>)', parse_mode='html')

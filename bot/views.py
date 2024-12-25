@@ -101,7 +101,7 @@ def delete_car(call):
 
 @bot.message_handler(commands=['start'])
 def start_handler(message):
-    try:
+    try:    
         if str(message.from_user.id) in ADMINS:
             TgUser.objects.filter(telegram_id=message.from_user.id).update(
                 step=USER_STEP['DEFAULT'])
@@ -121,6 +121,12 @@ def start_handler(message):
                         caption=response_message, reply_markup=main_button2)
     except Exception as e:
         print(e)
+
+
+@bot.message_handler(content_types=['video'])
+def handle_video_message(message):
+    file_id = message.video.file_id
+    bot.send_message(message.chat.id, f"File ID of the video: {file_id}")
 
 
 @bot.message_handler(commands=['all'])
@@ -607,7 +613,7 @@ def retrieve_region(call):
         print(e)
 
 
-@bot.message_handler(content_types=['text', 'contact', 'photo'])
+@bot.message_handler(content_types=['text', 'contact', 'photo', 'video'])
 def text_handler(message):
     try:
         switcher = {
