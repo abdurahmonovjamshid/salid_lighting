@@ -134,10 +134,10 @@ def start_handler(message):
 
 
 
-# @bot.message_handler(content_types=['video'])
-# def handle_video_message(message):
-#     file_id = message.video.file_id
-#     bot.send_message(message.chat.id, f"File ID of the video: {file_id}")
+@bot.message_handler(content_types=['video'])
+def handle_video_message(message):
+    file_id = message.video.file_id
+    bot.send_message(message.chat.id, f"File ID of the video: {file_id}")
 
 
 @bot.message_handler(commands=['all'])
