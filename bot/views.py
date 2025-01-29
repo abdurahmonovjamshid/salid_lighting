@@ -127,7 +127,7 @@ def start_handler(message):
 @bot.message_handler(commands=['help'])
 def start_handler(message):
     try:    
-        bot.send_video(message.chat.id, 'BAACAgIAAxkBAAIDoGdrgzNh2nXA_my4taDFz55Gk4HXAAI7YQACf69YSxcf2d8OufC2NgQ', 
+        bot.send_video(message.chat.id, 'BAACAgIAAxkBAAIG3GeZt0DJk5hBsnF1mjewzzUEVzVeAALeYAAC--KISIY9zwFY-iTtNgQ', 
                        caption='Salid Lighting extiyot qisimlari boti orqali Ariza qoldirish namunasi\n\n"📝 Ariza qoldirish" tugmasi orqali ariza to\'ldirishni boshlashingiz mumkin!')
     except Exception as e:
         print(e)
